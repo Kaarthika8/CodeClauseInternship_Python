@@ -1,0 +1,42 @@
+#Calculator
+
+def addition(a,b):
+    return a+b
+
+def subtraction(a,b):
+    return a-b
+
+def multiplication(a,b):
+    return a*b
+
+def division(a,b):
+    if b!=0:
+        return a/b
+    else:
+        print("Invalid")
+        return
+
+if __name__ == "__main__":
+
+    while True :
+        x = int(input("Enter operand 1 : "))
+        y = int(input("Enter operand 2 : "))
+        print("1. Addition  2.Subtraction   3.Multiplication    4.Division  5.Exit")
+        c = int(input("Enter operation to perform "))
+    
+        if c==1:
+            res = addition(x,y)
+            print("Addition of {0} and {1} = {2}".format(x,y,res))
+        elif c==2:
+            res = subtraction(x,y)
+            print("Subtraction of {0} and {1} = {2}".format(x,y,res))
+        elif c==3:
+            res = multiplication(x,y)
+            print("Multiplication of {0} and {1} = {2}".format(x,y,res))
+        elif c==4:
+            res = division(x,y)
+            print("Division of {0} and {1} = {2}".format(x,y,res))
+        elif c ==5:
+            break
+        else :
+            print("Invalid option")
