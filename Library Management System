@@ -1,0 +1,108 @@
+from tkinter import *
+import tkinter.messagebox as msg
+class Multiple():
+    def __init__(self,root):
+        self.root = root
+        self.root.geometry("400x400")
+        self.root.title("Library Management System")
+        self.root.config(bg="powderblue")
+
+        title = Label(self.root,text="Home Page", bg="powderblue", font=('bold','25'))
+        title.pack()
+
+        admin_button = Button(self.root, text="Admin", command = self.admin_page)
+        admin_button.place(x=150,y=120)
+
+        user_button = Button(self.root, text="User",command=self.user_page)
+        user_button.place(x=150, y=180)
+
+
+    def admin_page(self):
+        window = Tk()
+        window.title("Admin Page")
+        window.geometry("300x300")
+        window.config(bg="powderblue")
+
+        book_name_label = Label(window, text="Book Name:",bg="powderblue",font=('bold','15'))
+        book_name_label.place(x=20,y=40)
+
+        author_label = Label(window, text="Author Name:",bg="powderblue",font=('bold','15'))
+        author_label.place(x=20, y=100)
+
+        qty_label = Label(window, text="Quantity:",bg="powderblue",font=('bold','15'))
+        qty_label.place(x=20,y=160)
+
+        book_entry = Entry(window)
+        book_entry.place(x=150, y=45)
+
+        author_entry = Entry(window)
+        author_entry.place(x=150, y=105)
+
+        qty_entry = Entry(window)
+        qty_entry.place(x=150, y=165)
+
+        admin_submit = Button(window,text="Submit",command=self.admin_data)
+        admin_submit.place(x=120,y=200)
+
+
+    def user_page(self):
+        window1 = Tk()
+        window1.title("User Page")
+        window1.geometry("300x300")
+        window1.config(bg="powderblue")
+
+        user_book_label = Label(window1, text="Book Name:",bg="powderblue",font=('bold','15'))
+        user_book_label.place(x=20,y=40)
+
+        user_author_label = Label(window1, text="Author Name:", bg="powderblue", font=('bold','15'))
+        user_author_label.place(x=20,y=150)
+
+        self.user_book_entry = Entry(window1)
+        self.user_book_entry.place(x=150,y=45)
+
+        self.author_book_entry = Entry(window1)
+        self.author_book_entry.place(x=150,y=155)
+
+        user_submit = Button(window1, text="Submit",command =self.user_data)
+        user_submit.place(x=130, y=200)
+
+    def admin_data(self):
+        import mysql.connector
+
+        mydb = mysql.connector.connect(host='localhost',port=3306,user='root',database='library_management')
+        mycursor = mydb.cursor()
+
+        bookname = self.bookname_entry.get()
+        author = self.author_entry.get()
+        qty = self.quantity_entry.get()
+
+        mycursor.execute("insert into admin values(%s,%s,%s)",(bookname,author,qty))
+        mydb.commit()
+        msg.showinfo("Admin Books", "Book added to stock")
+
+    def user_data(self):
+        import mysql.connector
+        mydb = mysql.connector.connect(host='localhost',port=3306,user='root',database='library_management')
+        mycursor = mydb.cursor()
+
+        book_name = self.user_book.get()
+        author = self.author_book.get()
+
+        mycursor.execute("select quantity from admin where Book_Name=%s and Author=%s", (book_name, author))
+
+        q=0
+        for i in mycursor :
+            q=int(i[0])
+        if q>=1:
+            q = q-1
+            mycursor.execute("update admin set quantity=%s where Book_Name=%s and author =%s", (q.book_name, author))
+            mycursor.execute("insert into user values(%s,%s)",(book_name,author))
+            mydb.commit()
+            msg.showinfo("Book Availability", "Book available")
+        else:
+            msg.showerror("Book Availablity", "Book not found")
+
+
+root = Tk()
+obj = Multiple(root)
+root.mainloop()
