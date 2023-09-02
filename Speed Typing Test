@@ -1,0 +1,74 @@
+import time
+import tkinter as tk
+from tkinter import messagebox
+
+class TypingTesterGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Typing Speed Test")
+
+        self.paragraph = "Augusta Ada Lovelace is known as the first computer programmer, and, since 2009, she has been recognized annually on October 15th to highlight the often overlooked contributions of women to math and science."
+        self.correct_words = []
+        self.incorrect_words = {}
+        self.typed_words = []
+        self.input_text = tk.StringVar()
+        self.input_text.set("")
+        self.start_time = None
+
+        self.create_ui()
+
+    def create_ui(self):
+        self.label = tk.Label(self.root, text=self.paragraph, wraplength=400)
+        self.label.pack(pady=10)
+
+        self.entry = tk.Entry(self.root, textvariable=self.input_text, width=40)
+        self.entry.pack(pady=10)
+
+        self.start_button = tk.Button(self.root, text="Start Test", command=self.start_test)
+        self.start_button.pack()
+
+        self.submit_button = tk.Button(self.root, text="Submit Test", command=self.evaluate_test, state="disabled")
+        self.submit_button.pack()
+
+    def start_test(self):
+        self.input_text.set("")
+        self.correct_words = []
+        self.incorrect_words = {}
+        self.typed_words = []
+
+        self.start_time = time.time()
+        self.entry.config(state="normal")
+        self.start_button.config(state="disabled")
+        self.submit_button.config(state="normal")
+        self.entry.focus()
+
+    def evaluate_test(self):
+        typed_text = self.input_text.get()
+        self.typed_words = typed_text.split()
+
+        for i in range(len(self.typed_words)):
+            if i < len(self.paragraph_words) and self.typed_words[i] == self.paragraph_words[i]:
+                self.correct_words.append(self.typed_words[i])
+            elif i < len(self.paragraph_words):
+                self.incorrect_words[self.paragraph_words[i]] = self.typed_words[i]
+
+        accuracy = len(self.correct_words) / len(self.typed_words) * 100
+        elapsed_time = time.time() - self.start_time
+        words_per_minute = len(self.typed_words) / (elapsed_time / 60)
+
+        result_message = f"Accuracy: {accuracy:.2f}%\nWords Per Minute: {words_per_minute:.2f}\nIncorrect Words: {self.incorrect_words}"
+        messagebox.showinfo("Test Result", result_message)
+
+        self.entry.config(state="disabled")
+        self.start_button.config(state="normal")
+        self.submit_button.config(state="disabled")
+
+    def run(self):
+        self.paragraph_words = self.paragraph.split()
+        self.root.mainloop()
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = TypingTesterGUI(root)
+    app.run()
+
